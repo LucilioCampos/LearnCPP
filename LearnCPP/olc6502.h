@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <map>
 
 class Bus;
 
@@ -15,14 +16,12 @@ public:
 
 public:
 
-	uint8_t a = 0x00;		// Acumulator register	
-	uint8_t x = 0x00;		// X register
-	uint8_t y = 0x00;		// Y register
+	uint8_t a = 0x00;			// Acumulator register	
+	uint8_t x = 0x00;			// X register
+	uint8_t y = 0x00;			// Y register
 	uint8_t stkp = 0x00;		// StackPointer register (points to location on bus)
 	uint16_t pc = 0x0000;		// ProgramCounter register
 	uint8_t status = 0x00;		// status register
-
-	void ConnectBus(Bus* n) { bus = n; };
 
 	enum FLAGS6502
 	{
@@ -46,18 +45,24 @@ private:
 
 
 	// Addressing Modes
-	uint8_t IMP(); uint8_t IMM();
-	uint8_t ZP0(); uint8_t ZPX();
-	uint8_t ZPY(); uint8_t REL();
-	uint8_t ABS(); uint8_t ABX();
-	uint8_t ABY(); uint8_t IND();
-	uint8_t IMP(); uint8_t IZY();
+	uint8_t IMP();	uint8_t IMM();
+	uint8_t ZP0();	uint8_t ZPX();
+	uint8_t ZPY();	uint8_t REL();
+	uint8_t ABS();	uint8_t ABX();
+	uint8_t ABY();	uint8_t IND();
+	uint8_t IZX();	uint8_t IZY();
 
 	// Signals
 	void clock();
 	void reset();
 	void irq();
 	void nmi();
+
+	bool complete() const;
+
+	void ConnectBus(Bus* n) { bus = n; };
+
+	std::map<uint16_t, std::string> disassemble(uint16_t nStart, uint16_t nStop);
 
 
 	// Convenience funtions to access status register
@@ -97,6 +102,7 @@ private:
 
 	uint8_t fetch();
 	uint8_t fetched = 0x00;
+	uint16_t temp = 0x0000;
 	uint16_t addr_abs = 0x0000;
 	uint16_t addr_rel = 0x00;
 	uint8_t opcode = 0x00;

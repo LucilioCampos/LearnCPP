@@ -8,7 +8,6 @@ public:
 	Bus();
 	~Bus();
 
-
 public: // Devices on bus
 	olc6502 cpu;
 
