@@ -12,8 +12,6 @@ public:
 	olc6502();
 	~olc6502();
 
-
-
 public:
 
 	uint8_t a = 0x00;			// Acumulator register	
@@ -34,16 +32,22 @@ public:
 		V = (1 << 6),	// Overflow
 		N = (1 << 7),	// Negative
 	};
+	void ConnectBus(Bus* n) { bus = n; };
+
+	// Signals
+	void clock();
+	void reset();
+	void irq();
+	void nmi();
 
 
 private:
 	Bus		*bus = nullptr;
 	uint8_t read(uint16_t a);
 	void	write(uint16_t a, uint8_t d);
+	uint32_t clock_count = 0;
 
 	
-
-
 	// Addressing Modes
 	uint8_t IMP();	uint8_t IMM();
 	uint8_t ZP0();	uint8_t ZPX();
@@ -52,15 +56,7 @@ private:
 	uint8_t ABY();	uint8_t IND();
 	uint8_t IZX();	uint8_t IZY();
 
-	// Signals
-	void clock();
-	void reset();
-	void irq();
-	void nmi();
-
-	bool complete() const;
-
-	void ConnectBus(Bus* n) { bus = n; };
+	bool complete();
 
 	std::map<uint16_t, std::string> disassemble(uint16_t nStart, uint16_t nStop);
 
